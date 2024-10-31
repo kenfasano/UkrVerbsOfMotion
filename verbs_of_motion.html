@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbs of Motion</title>
+    <style>
+        body {
+            display: flex;
+        }
+        #list {
+            width: 200px;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 10px;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        }
+        .list-item {
+            cursor: pointer;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="list"></div>
+    <div id="content">Select an item to view the content.</div>
+
+    <script>
+        const fileDict = {
+            "Go on foot": "go_on_foot.html",
+            "Go by transport": "go_by_transport.html",
+            "Run": "run.html",
+            "Fly": "fly.html",
+            "Swim": "swim.html",
+            "Bear, carry on foot": "bear_carry_on_foot.html",
+            "Lead, guide on foot, by hand": "lead_guide_on_foot_by_hand.html",
+            "Convey by transport, haul": "convey_by_transport_haul.html",
+        };
+
+        const listDiv = document.getElementById('list');
+        const contentDiv = document.getElementById('content');
+        let previousItem = null;
+
+        Object.keys(fileDict).forEach(key => {
+            const listItem = document.createElement('div');
+            const displayName = key;
+            listItem.textContent = displayName;
+            listItem.className = 'list-item';
+            listItem.onclick = () => {
+                const filePath = fileDict[displayName];
+                fetch(filePath)
+                    .then(response => response.text())
+                    .then(data => {
+                        contentDiv.innerHTML = data;
+                    })
+                    .catch(error => {
+                        contentDiv.innerHTML = 'Error loading ' + filePath + ': ' + error;
+                    });
+
+                if (previousItem) {
+                    previousItem.classList.remove('highlighted');
+                }
+                listItem.classList.add('highlighted');
+                previousItem = listItem;
+            };
+            listDiv.appendChild(listItem);
+        });
+    </script>
+</body>
+</html>
