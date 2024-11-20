@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukrainian Stress Mark Converter</title>
+    <style>
+        /* Container for the text area and button */
+        .container {
+            display: flex;
+            align-items: flex-start; /* Align button with the top of the text area */
+            gap: 10px; /* Space between text area and button */
+        }
+
+        /* Styling for the text areas */
+        textarea {
+            width: 600px;
+            height: 300px;
+        }
+
+        /* Optional button styling */
+        button {
+            height: 40px; /* Match the button size */
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ukrainian Stress Mark Converter</h1>
+    <!-- Container for the first text area and button -->
+    <div class="container">
+        <textarea id="source" rows="40" cols="80"></textarea>
+        <br>
+        <button onclick="removeAccents()">Remove Accents</button>
+        <br>
+        <button onclick="convertStressMarks()">Convert Stress Marks</button>
+        <br>
+        <button onclick="reformatText()">Reformat Text</button>
+    </div>
+    <br>
+    <div class="container">
+        <textarea id="destination" rows="40" cols="80" readonly></textarea>
+        <button onclick="copyDestinationToSource()">
+            <span class="arrow">↑</span>
+        </button>
+    </div>
+
+    <script>
+        function removeAccents() {
+            // Get the text from the text area
+            let text = document.getElementById("source").value;
+
+            // Normalize to decompose accents from base letters
+            text = text.normalize("NFD");
+
+            // Remove all combining marks (diacritics)
+            text = text.replace(/[\u0300-\u036f]/g, "");
+            text = text.replace(/[^a-zA-Zа-яА-ЯёЁ0-9.,!?;:'"\-()\s]/g, "");
+            // Display the result
+            document.getElementById("destination").textContent = text;
+        }
+
+        function reformatText(input) {
+            // Get the text from the text area
+            let text = document.getElementById("source").value;
+            text = text
+                // Split into lines and trim trailing whitespace
+                .split("\n")
+                .map(line => line.trimEnd())
+                .join(" ") // Join lines into a single string with spaces
+                // Add newlines after ., ?, or !
+                .replace(/\s*([.!?])\s*/g, "$1\n")
+                .trim(); // Trim any trailing newline
+
+            // Display the result
+            document.getElementById("destination").textContent = text;
+        }
+
+        function copyDestinationToSource() {
+            const destinationText = document.getElementById('destination').value;
+            document.getElementById('source').value = destinationText;
+        }
+
+        function convertStressMarks() {
+            // Get the source text
+            let text = document.getElementById("source").value;
+
+            // Define a mapping of Cyrillic vowels to their accented versions
+            const accentedMap = {
+    "а": "а́", "е": "е́", "и": "и́", "о": "о́", "у": "у́", "ы": "ы́",
+    "э": "э́", "ю": "ю́", "я": "я́", "є": "є́", "і": "і́", "ї": "ї́"
+            };
+            text = text.replace(/i\s*΄\s*/gi, "і́");
+            text = text.replace(/ю\s*΄\s*/gi, "ю́");
+            text = text.replace(/у\s*΄\s*/gi, "у́");
+            text = text.replace(/и\s*΄\s*/gi, "и́"); 
+
+            // Display the result
+            document.getElementById("destination").textContent = text;
+        }
+
+        function copyDestinationToSource() {
+            // Set the converted text to the destination text area
+            const destinationText = document.getElementById('destination').value;
+            document.getElementById('source').value = destinationText;
+        }
+    </script>
+</body>
+</html>
